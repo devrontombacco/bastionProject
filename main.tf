@@ -72,6 +72,14 @@ resource "aws_route_table" "route_table_public" {
 
 }
 
+# Associate Public Route Table with Public Subnet
+resource "aws_route_table_association" "public_route_table_association" {
+
+  subnet_id      = aws_subnet.public_subnet_1A.id
+  route_table_id = aws_route_table.route_table_public.id
+
+}
+
 
 # Create Route Table for Private Subnet
 resource "aws_route_table" "route_table_private" {
@@ -82,4 +90,12 @@ resource "aws_route_table" "route_table_private" {
     Name = "route_table_private"
   }
 
+}
+
+# Associate Private Route Table with Private Subnet
+resource "aws_route_table_association" "private_route_table_association" {
+
+  subnet_id      = aws_subnet.private_subnet_1A.id
+  route_table_id = aws_route_table.route_table_private.id
+  
 }
