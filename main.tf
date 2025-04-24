@@ -35,7 +35,6 @@ resource "aws_internet_gateway" "igw" {
 }
 
 # Create Public Subnet 
-
 resource "aws_subnet" "public_subnet_1A" {
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = "12.0.1.0/24"
@@ -49,8 +48,8 @@ resource "aws_subnet" "public_subnet_1A" {
 }
 
 # Create Private Subnet 
-
 resource "aws_subnet" "private_subnet_1A" {
+
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = "12.0.2.0/24"
   availability_zone = "eu-west-1a"
@@ -58,6 +57,29 @@ resource "aws_subnet" "private_subnet_1A" {
 
   tags = {
     Name = "private_subnet_1A"
+  }
+
+}
+
+# Create Route Table for Public Subnet
+resource "aws_route_table" "route_table_public" {
+
+  vpc_id = "${aws_vpc.main_vpc.id}"
+
+  tags = {
+    Name = "route_table_public"
+  }
+
+}
+
+
+# Create Route Table for Private Subnet
+resource "aws_route_table" "route_table_private" {
+
+  vpc_id = "${aws_vpc.main_vpc.id}"
+
+  tags = {
+    Name = "route_table_private"
   }
 
 }
