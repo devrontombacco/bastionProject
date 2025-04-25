@@ -99,3 +99,43 @@ resource "aws_route_table_association" "private_route_table_association" {
   route_table_id = aws_route_table.route_table_private.id
   
 }
+
+# Insert Route into Public RT
+resource "aws_route" "internet_access" {
+    
+  route_table_id         = aws_route_table.route_table_public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.igw.id
+
+}
+
+
+# Create EC2 instance in public subnet
+resource "aws_instance" "ec2_public_bastion" {
+
+  ami           = "ami-0df368112825f8d8f"
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.public_subnet_1A.id
+
+  tags = {
+    Name = "ec2_public_bastion"
+  }
+  #security_groups  = [aws_security_group.web_sg.name]
+  key_name        = "MY_EC2_INSTANCE_KEYPAIR"
+
+}
+
+# Create EC2 instance in private subnet
+resource "aws_instance" "ec2_private" {
+
+  ami           = "ami-0df368112825f8d8f"
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.private_subnet_1A.id
+
+  tags = {
+    Name = "ec2_private"
+  }
+  #security_groups  = [aws_security_group.web_sg.name]
+  key_name        = "MY_EC2_INSTANCE_KEYPAIR"
+
+}
