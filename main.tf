@@ -139,3 +139,39 @@ resource "aws_instance" "ec2_private" {
   key_name        = "MY_EC2_INSTANCE_KEYPAIR"
 
 }
+
+#Create env var for my ip address 
+
+variable "my_ip_address" {
+  type    = string
+  default = "0.0.0.0/0" # fallback IP
+}
+
+# Create Security Groups 
+
+resource "aws_security_group" "public_ec2_sg" {
+  name        = "public_ec2_sg"
+  description = "Allow inbound traffic on ports 22 and 80"
+  vpc_id      = aws_vpc.main_vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.my_ip_address}/32"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["${var.my_ip_address}/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"] # Allows all outbound traffic
+  }
+}
