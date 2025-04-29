@@ -53,6 +53,7 @@ resource "aws_subnet" "private_subnet_1A" {
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = "12.0.2.0/24"
   availability_zone = "eu-west-1a"
+  
   map_public_ip_on_launch = false
 
   tags = {
@@ -144,7 +145,7 @@ resource "aws_instance" "ec2_private" {
   tags = {
     Name = "ec2_private"
   }
-  vpc_security_group_ids  = [aws_security_group.public_ec2_sg.id]
+  security_groups  = [aws_security_group.public_ec2_sg.id]
   key_name        = "MY_EC2_INSTANCE_KEYPAIR"
 
 }
