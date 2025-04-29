@@ -113,15 +113,24 @@ resource "aws_route" "internet_access" {
 # Create EC2 instance in public subnet
 resource "aws_instance" "ec2_public_bastion" {
 
-  ami           = "ami-0df368112825f8d8f"
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.public_subnet_1A.id
+  ami               = "ami-0df368112825f8d8f"
+  instance_type     = "t2.micro"
+  availability_zone = "eu-west-1a"
+  subnet_id         = aws_subnet.public_subnet_1A.id
+  key_name          = "MY_EC2_INSTANCE_KEYPAIR"
 
   tags = {
     Name = "ec2_public_bastion"
   }
-  #security_groups  = [aws_security_group.web_sg.name]
-  key_name        = "MY_EC2_INSTANCE_KEYPAIR"
+  security_groups  = [aws_security_group.public_ec2_sg.id]
+  
+  user_data = <<-EOF
+  #!/bin/bash
+  yes | sudo apt update 
+  yes | sudo apt install apache2
+  echo "<h1>Server Details</h1><p><strong>Hostname:</strong> $(hostname)</p><p><strong>IP Address:</strong>$(hostname -I | cut -d" " -f1)</strong></p>"> /var/www/html/index.html
+  sudo systemctl restart apache2
+  EOF  
 
 }
 
@@ -135,7 +144,7 @@ resource "aws_instance" "ec2_private" {
   tags = {
     Name = "ec2_private"
   }
-  #security_groups  = [aws_security_group.web_sg.name]
+  vpc_security_group_ids  = [aws_security_group.public_ec2_sg.id]
   key_name        = "MY_EC2_INSTANCE_KEYPAIR"
 
 }
@@ -155,6 +164,7 @@ resource "aws_security_group" "public_ec2_sg" {
   vpc_id      = aws_vpc.main_vpc.id
 
   ingress {
+    description = "allow SSH traffic"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -162,6 +172,7 @@ resource "aws_security_group" "public_ec2_sg" {
   }
 
   ingress {
+    description = "allow http traffic"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
