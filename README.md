@@ -13,7 +13,7 @@ In this project I built a secure AWS environment, where one host only (known as 
 
 ### Architecture
 
-![Alt text](/architecture-diagrams/bastion_architecture.png)
+![Screenshot](/architecture-diagrams/bastion_architecture.png)
 
 - 1 VPC
 - 1 Public subnet
