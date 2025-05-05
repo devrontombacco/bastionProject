@@ -122,8 +122,9 @@ resource "aws_instance" "ec2_public_bastion" {
   tags = {
     Name = "ec2_public_bastion"
   }
-  security_groups  = [aws_security_group.public_ec2_sg.id]
-  
+  #security_groups  = [aws_security_group.public_ec2_sg.id]
+  vpc_security_group_ids = [aws_security_group.public_ec2_sg.id]
+
   user_data = <<-EOF
   #!/bin/bash
   yes | sudo apt update 
@@ -144,7 +145,8 @@ resource "aws_instance" "ec2_private" {
   tags = {
     Name = "ec2_private"
   }
-  security_groups  = [aws_security_group.private_ec2_sg.id]
+  #security_groups  = [aws_security_group.private_ec2_sg.id]
+  vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
   key_name        = "MY_EC2_INSTANCE_KEYPAIR"
 
 }
@@ -168,7 +170,8 @@ resource "aws_security_group" "public_ec2_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip_address}/32"]
+    #cidr_blocks = ["${var.my_ip_address}/32"]
+    cidr_blocks = [var.my_ip_address]
   }
 
   ingress {
@@ -176,7 +179,8 @@ resource "aws_security_group" "public_ec2_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip_address}/32"]
+    #cidr_blocks = ["${var.my_ip_address}/32"]
+    cidr_blocks = [var.my_ip_address]
   }
 
   egress {

@@ -34,7 +34,15 @@ To install this on your machine follow these steps:
 2) Open it up in a code editor 
 3) If you don't have a keypair, in your Terminal, create a keypair: 
 - `ssh-keygen -t rsa -b 4096 -f ~/.ssh/your-key-name`
-4) 
+4) Run these commands in your terminal: 
+- `export AWS_ACCESS_KEY_ID="your-access-key-id"` (this will set your access key in the terminal session)
+- `export AWS_SECRET_ACCESS_KEY="your-secret"` (this will set your secret access key in the terminal session)
+5) Ensure your current IP is set as the IP from which traffic can enter the set up. Type this into your Bash shell: 
+- `export TF_VAR_my_ip_address="$(curl -s https://checkip.amazonaws.com)/32"` (This will check your current IP and set that value to the my_ip_address variable) 
+6) Then run the Terraform commands: 
+- `terraform init`
+- `terraform plan`
+- `terraform apply` + (type in yes) 
 
 ### Usage
 Follow these steps to check its working: 
