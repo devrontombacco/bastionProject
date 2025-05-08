@@ -29,12 +29,11 @@ In this project I built a secure AWS environment, where one host only (known as 
 
 ### Installation
 
-To install this on your machine follow these steps: 
+To install this code on your machine follow these steps: 
 1) Download code onto your machine using .zip file or through git cli
 2) Open it up in a code editor 
-3) If you don't have a keypair, in your Terminal, create a keypair: 
-- `ssh-keygen -t rsa -b 4096 -f ~/.ssh/your-key-name`
-4) Run these commands in your terminal: 
+3) If you don't have an SSH keypair, create a keypair from your Terminal
+4) Run these commands in your terminal to set up environment variables: 
 - `export AWS_ACCESS_KEY_ID="your-access-key-id"` (this will set your access key in the terminal session)
 - `export AWS_SECRET_ACCESS_KEY="your-secret"` (this will set your secret access key in the terminal session)
 5) Ensure your current IP is set as the IP from which traffic can enter the set up. Type this into your Bash shell: 
@@ -42,15 +41,14 @@ To install this on your machine follow these steps:
 6) Then run the Terraform commands: 
 - `terraform init`
 - `terraform plan`
-- `terraform apply` + (type in yes) 
+- `terraform apply` + (select yes) 
 
 ### Usage
 Follow these steps to check its working: 
-1) Log into your AWS console. Locate the public EC2 instance. Check the IP. Insert it directly into your browser and see if you can connect to it using http (not https). You should see a message come up on your screen
-2) SSH into the bastion host
-3) Once in, ssh into the private EC2 host
+1) Log into your AWS console. Locate the public EC2 instance. Check the IP. Insert it directly into your browser and see if you can connect to it using http (**not** https). You should see a html message appear on your screen with the hostname ip and server ip.
+2) SSH into the bastion host using the keypair you created.
+3) Once inside, create another key file with the same name. Copy and paste the same data from your original key. Then ssh into the private EC2 host
 
-Et voila... 
 
 ### Licensing 
-General MIT license... 
+MIT license
