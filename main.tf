@@ -1,20 +1,4 @@
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-# Configure the AWS Provider
-provider "aws" {
-
-   region = "eu-west-1"
-
-}
-
 # Create main VPC
 resource "aws_vpc" "main_vpc" {
 
@@ -137,7 +121,6 @@ resource "aws_instance" "ec2_public_bastion" {
   tags = {
     Name = "ec2_public_bastion"
   }
-
   vpc_security_group_ids = [aws_security_group.public_ec2_sg.id]
 
   user_data = <<-EOF
@@ -150,43 +133,17 @@ resource "aws_instance" "ec2_public_bastion" {
 
 }
 
-# Create EC2 instance in public subnet
-# resource "aws_instance" "ec2_public_bastion" {
-
-#   ami               = "ami-0df368112825f8d8f"
-#   instance_type     = "t2.micro"
-#   availability_zone = "eu-west-1a"
-#   subnet_id         = aws_subnet.public_subnet_1A.id
-#   key_name          = "MY_EC2_INSTANCE_KEYPAIR"
-
-#   tags = {
-#     Name = "ec2_public_bastion"
-#   }
-#   vpc_security_group_ids = [aws_security_group.public_ec2_sg.id]
-
-#   user_data = <<-EOF
-#   #!/bin/bash
-#   yes | sudo apt update 
-#   yes | sudo apt install apache2
-#   echo "<h1>Server Details</h1><p><strong>Hostname:</strong> $(hostname)</p><p><strong>IP Address:</strong>$(hostname -I | cut -d" " -f1)</strong></p>"> /var/www/html/index.html
-#   sudo systemctl restart apache2
-#   EOF  
-
-# }
-
-
 
 # Create EC2 instance in private subnet
 resource "aws_instance" "ec2_private" {
 
-  ami           = "ami-0df368112825f8d8f"
+  ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.private_subnet_1A.id
 
   tags = {
     Name = "ec2_private"
   }
-  #security_groups  = [aws_security_group.private_ec2_sg.id]
   vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
   key_name        = "MY_EC2_INSTANCE_KEYPAIR"
 
