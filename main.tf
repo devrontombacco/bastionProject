@@ -2,7 +2,7 @@
 # Create main VPC
 resource "aws_vpc" "main_vpc" {
 
-    cidr_block = "12.0.0.0/16"
+    cidr_block = var.vpc_cidr_block
         tags = {
             Name = "main_vpc"
         }
@@ -20,8 +20,8 @@ resource "aws_internet_gateway" "igw" {
 # Create Public Subnet 
 resource "aws_subnet" "public_subnet_1A" {
   vpc_id     = aws_vpc.main_vpc.id
-  cidr_block = "12.0.1.0/24"
-  availability_zone = "eu-west-1a"
+  cidr_block = var.public_subnet_cidr_block
+  availability_zone = var.availability_zone
   map_public_ip_on_launch = true
 
   tags = {
@@ -34,8 +34,8 @@ resource "aws_subnet" "public_subnet_1A" {
 resource "aws_subnet" "private_subnet_1A" {
 
   vpc_id     = aws_vpc.main_vpc.id
-  cidr_block = "12.0.2.0/24"
-  availability_zone = "eu-west-1a"
+  cidr_block = var.private_subnet_cidr_block
+  availability_zone = var.availability_zone
   
   map_public_ip_on_launch = false
 
@@ -114,9 +114,9 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "ec2_public_bastion" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  availability_zone = "eu-west-1a"
+  availability_zone = var.availability_zone
   subnet_id         = aws_subnet.public_subnet_1A.id
-  key_name          = "MY_EC2_INSTANCE_KEYPAIR"
+  key_name          = var.keypair_name
 
   tags = {
     Name = "ec2_public_bastion"
@@ -168,7 +168,6 @@ resource "aws_security_group" "public_ec2_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    #cidr_blocks = ["${var.my_ip_address}/32"]
     cidr_blocks = [var.my_ip_address]
   }
 
@@ -177,7 +176,6 @@ resource "aws_security_group" "public_ec2_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    #cidr_blocks = ["${var.my_ip_address}/32"]
     cidr_blocks = [var.my_ip_address]
   }
 
